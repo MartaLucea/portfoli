@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — DAW</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4fa;
+    --bg2: #e4ecf7;
+    --ink: #0d1b2e;
+    --ink2: #3a4d65;
+    --ink3: #7a90a8;
+    --accent: #1a56db;
+    --accent2: #3b82f6;
+    --accent-light: #dbeafe;
+    --accent-mid: #93c5fd;
+    --red: #c1440e;
+    --border: #c5d4e8;
+    --white: #f8fbff;
+    --tag-bg: #e0eaf7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Mono', monospace; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+  /* ── LANG SWITCHER ── */
+  .lang-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; justify-content: flex-end; align-items: center;
+    padding: 0.4rem 4rem; background: var(--ink);
+    gap: 0.25rem;
+  }
+  .lang-btn {
+    font-family: 'DM Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.3rem 0.75rem; background: transparent;
+    color: var(--ink3); border: 1px solid #2a3d55;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .lang-btn:hover { color: #fff; border-color: var(--accent2); }
+  .lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 2rem; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 4rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 2px 20px rgba(26,86,219,0.1); }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+  .nav-logo .ph { color: var(--ink3); font-style: italic; }
+  .nav-right { display: flex; align-items: center; gap: 2rem; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+  .nav-links a { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-github {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--white); background: var(--ink); text-decoration: none;
+    padding: 0.5rem 1rem; border: 1px solid var(--ink);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .nav-github:hover { background: var(--accent); border-color: var(--accent); }
+  .nav-github svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 7rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-left {
+    padding: 5rem 3rem 4rem 4rem;
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid var(--border);
+  }
+  .hero-label {
+    font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    opacity: 0; animation: fadeUp 0.6s ease 0.15s forwards;
+  }
+  .hero-label::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); }
+  .hero-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 5vw, 4.5rem); line-height: 1.05;
+    letter-spacing: -0.02em; color: var(--ink); margin-bottom: 0.5rem;
+    opacity: 0; animation: fadeUp 0.6s ease 0.25s forwards;
+  }
+  .hero-name .ph { color: var(--ink3); font-style: italic; border-bottom: 2px dashed var(--border); }
+  .hero-role {
+    font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase;
+    margin-top: 1rem; margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 0.6s ease 0.35s forwards;
+  }
+  .hero-bio {
+    font-size: 0.88rem; line-height: 1.8; color: var(--ink2);
+    max-width: 40ch; margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.6s ease 0.45s forwards;
+  }
+  .hero-cta-group {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.6s ease 0.55s forwards;
+  }
+  .hero-right {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2.5rem; padding: 4rem 3rem;
+    opacity: 0; animation: fadeUp 0.7s ease 0.45s forwards;
+  }
+
+  /* ── PHOTO ── */
+  .profile-photo-wrap { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+  .profile-photo-wrap::before {
+    content: ''; position: absolute; inset: -7px;
+    border: 1.5px solid var(--accent); z-index: 0;
+    transform: rotate(3deg); transition: transform 0.45s ease;
+  }
+  .profile-photo-wrap:hover::before { transform: rotate(0deg); }
+  .profile-photo-placeholder {
+    position: relative; z-index: 1; width: 160px; height: 160px;
+    background: var(--white); border: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem; cursor: pointer; transition: background 0.2s;
+  }
+  .profile-photo-placeholder:hover { background: var(--bg2); }
+  .profile-photo-placeholder svg { width: 34px; height: 34px; stroke: var(--ink3); stroke-width: 1.2; fill: none; }
+  .profile-photo-placeholder span { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); text-align: center; line-height: 1.5; }
+  .profile-photo-img { position: relative; z-index: 1; width: 160px; height: 160px; object-fit: cover; display: blovk; cursor: pointer; object-fit: cover;}
+  #photo-input { display: none; }
+
+  /* ── SKILLS CARD ── */
+  .hero-card-main {
+    background: var(--white); border: 1px solid var(--border);
+    padding: 2rem 2.5rem; position: relative; width: 100%; max-width: 340px;
+  }
+  .hero-card-main::before {
+    content: '< portfolio />'; display: block;
+    font-size: 0.65rem; color: var(--accent); letter-spacing: 0.08em;
+    margin-bottom: 1.5rem; opacity: 0.7;
+  }
+  .floating-tag {
+    position: absolute; background: var(--accent); color: white;
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.4rem 0.9rem; top: -1rem; right: 2rem;
+  }
+  .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .skill-pill {
+    background: var(--tag-bg); color: var(--ink2); font-size: 0.68rem;
+    padding: 0.38rem 0.7rem; letter-spacing: 0.04em; text-align: center;
+    border: 1px solid transparent; transition: all 0.2s;
+  }
+  .skill-pill:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+  .skill-pill.accent { background: var(--accent-light); color: var(--accent); }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--ink); color: var(--bg);
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.85rem 1.75rem; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; color: var(--ink);
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.85rem 1.75rem; border: 1px solid var(--border);
+    text-decoration: none; transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-cv {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--accent); color: white;
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.85rem 1.75rem; border: none; cursor: pointer;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .btn-cv:hover { background: var(--ink); transform: translateY(-2px); }
+  .btn-cv svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-d1 { transition-delay: 0.1s; }
+  .reveal-d2 { transition-delay: 0.2s; }
+  .reveal-d3 { transition-delay: 0.3s; }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 4rem; border-bottom: 1px solid var(--border); }
+  .section-header { display: flex; align-items: baseline; gap: 1.5rem; margin-bottom: 4rem; }
+  .section-number { font-size: 0.65rem; color: var(--ink3); letter-spacing: 0.15em; text-transform: uppercase; flex-shrink: 0; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--ink); letter-spacing: -0.02em; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── ABOUT ── */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); }
+  .about-block { padding: 3rem; background: var(--white); border-right: 1px solid var(--border); }
+  .about-block:last-child { border-right: none; }
+  .about-intro { font-family: 'DM Serif Display', serif; font-size: 1.35rem; line-height: 1.5; color: var(--ink); margin-bottom: 1.5rem; letter-spacing: -0.01em; }
+  .about-text { font-size: 0.82rem; line-height: 1.85; color: var(--ink2); }
+  .about-text + .about-text { margin-top: 1rem; }
+  .about-values { display: flex; flex-direction: column; gap: 1.25rem; }
+  .about-value { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border: 1px solid var(--border); background: var(--bg); transition: border-color 0.2s; }
+  .about-value:hover { border-color: var(--accent); }
+  .about-value-icon { width: 32px; height: 32px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .about-value-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
+  .about-value-title { font-size: 0.78rem; font-weight: 500; color: var(--ink); margin-bottom: 0.2rem; }
+  .about-value-desc { font-size: 0.72rem; color: var(--ink2); line-height: 1.6; }
+
+  /* ── PROJECTS ── */
+  .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); }
+  .project-card {
+    padding: 2.5rem; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background: var(--white); position: relative; overflow: hidden; transition: background 0.25s;
+  }
+  .project-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.4s ease; }
+  .project-card:hover { background: var(--bg2); }
+  .project-card:hover::after { width: 100%; }
+  .project-card:nth-child(3n) { border-right: none; }
+  .project-year { font-size: 0.65rem; color: var(--ink3); letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+  .project-name { font-family: 'DM Serif Display', serif; font-size: 1.4rem; line-height: 1.2; color: var(--ink); margin-bottom: 0.75rem; }
+  .project-desc { font-size: 0.78rem; line-height: 1.75; color: var(--ink2); margin-bottom: 1.5rem; }
+  .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+  .tech-tag { font-size: 0.65rem; padding: 0.25rem 0.6rem; background: var(--tag-bg); color: var(--ink2); letter-spacing: 0.05em; border: 1px solid transparent; transition: border-color 0.2s; }
+  .tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+  .project-result { font-size: 0.72rem; color: var(--accent); padding: 0.6rem 0.9rem; background: var(--accent-light); border-left: 2px solid var(--accent); line-height: 1.5; }
+  .project-result.pending { color: var(--red); background: #fdeee8; border-left-color: var(--red); }
+
+  /* ── SKILLS ── */
+  .skills-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); }
+  .skills-block { padding: 3rem; border-right: 1px solid var(--border); background: var(--white); }
+  .skills-block:last-child { border-right: none; }
+  .skills-block-title { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+  .skills-block-title::after { content: ''; flex: 1; height: 1px; background: var(--accent-light); }
+  .skills-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .skill-tag { font-size: 0.72rem; padding: 0.45rem 0.9rem; background: var(--tag-bg); color: var(--ink2); letter-spacing: 0.04em; border: 1px solid var(--border); transition: all 0.2s; cursor: default; }
+  .skill-tag:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateY(-2px); }
+
+  /* ── EDUCATION ── */
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .edu-card { background: var(--white); border: 1px solid var(--border); padding: 2.5rem; transition: border-color 0.25s, transform 0.25s; }
+  .edu-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .edu-period { font-size: 0.65rem; color: var(--ink3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .edu-degree { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--ink); line-height: 1.3; margin-bottom: 0.5rem; }
+  .edu-school { font-size: 0.78rem; color: var(--accent); letter-spacing: 0.05em; }
+  .edu-badge { display: inline-block; margin-top: 1.5rem; font-size: 0.65rem; padding: 0.3rem 0.7rem; background: var(--accent-light); color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* ── AWARDS ── */
+  .awards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); }
+  .award-item { padding: 2.5rem; border-right: 1px solid var(--border); background: var(--white); display: flex; flex-direction: column; gap: 0.75rem; transition: background 0.2s; }
+  .award-item:hover { background: var(--bg2); }
+  .award-item:last-child { border-right: none; }
+  .award-pos { font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: var(--accent); line-height: 1; }
+  .award-name { font-size: 0.88rem; font-weight: 500; color: var(--ink); }
+  .award-desc { font-size: 0.72rem; color: var(--ink3); line-height: 1.6; margin-top: auto; }
+
+  /* ── CONTACT ── */
+  .contact-section { background: var(--ink); color: var(--bg); padding: 6rem 4rem; border-bottom: none; }
+  .contact-section .section-title { color: var(--bg); }
+  .contact-section .section-number { color: var(--ink3); }
+  .contact-section .section-line { background: #1e2f44; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .contact-text { font-family: 'DM Serif Display', serif; font-size: 1.6rem; line-height: 1.4; color: var(--bg); letter-spacing: -0.02em; }
+  .contact-text em { color: var(--accent2); font-style: normal; }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; background: #0d1e30; border: 1px solid #1e2f44; color: var(--bg); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.05em; transition: background 0.2s, border-color 0.2s, transform 0.2s; }
+  .contact-link:hover { background: var(--accent); border-color: var(--accent); transform: translateX(4px); }
+  .contact-link-label { font-size: 0.6rem; color: var(--ink3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.2rem; display: block; }
+  .contact-link .arrow { font-size: 1rem; }
+  .contact-placeholder { color: #3a5070; font-style: italic; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--ink); border-top: 1px solid #1e2f44; padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center; }
+  footer span { font-size: 0.65rem; color: #3a5070; letter-spacing: 0.08em; }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .lang-bar { padding: 0.4rem 1.5rem; }
+    nav { padding: 1rem 1.5rem; top: 2rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 5rem 1.5rem 3rem; border-right: none; }
+    .hero-right { padding: 2rem 1.5rem; border-top: 1px solid var(--border); }
+    section { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-block { border-right: none; border-bottom: 1px solid var(--border); }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card:nth-child(3n) { border-right: 1px solid var(--border); }
+    .project-card { border-right: none; }
+    .skills-layout { grid-template-columns: 1fr; }
+    .skills-block { border-right: none; border-bottom: 1px solid var(--border); }
+    .edu-grid { grid-template-columns: 1fr; }
+    .awards-row { grid-template-columns: 1fr; }
+    .award-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .contact-section { padding: 4rem 1.5rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('ca')">CAT</button>
+  <button class="lang-btn" onclick="setLang('es')">ES</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo"><span class="ph">MLM</span></a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#sobre" data-i="nav.about">Sobre mi</a></li>
+      <li><a href="#projectes" data-i="nav.projects">Projectes</a></li>
+      <li><a href="#skills" data-i="nav.skills">Habilitats</a></li>
+      <li><a href="#formacio" data-i="nav.education">Formació</a></li>
+      <li><a href="#contacte" data-i="nav.contact">Contacte</a></li>
+    </ul>
+    <a href="https://github.com/MartaLucea" target="_blank" class="nav-github">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;">
+  <div class="hero-left">
+    <div class="hero-label" data-i="hero.label">Portfolio · DAW · 2026</div>
+    <h1 class="hero-name">
+      <span class="ph">Marta</span><br>
+      <span class="ph">Lucea Michilot</span>
+    </h1>
+    <p class="hero-role" data-i="hero.role">Desenvolupament d'Aplicacions Web</p>
+    <p class="hero-bio" data-i="hero.bio">
+      Estudiant de CFGS DAW amb competències en frontend i back-end. Experiència en HTML, CSS, JavaScript, PHP i bases de dades relacionals. Orientada al treball col·laboratiu amb Git i la millora d'usabilitat i accessibilitat web.
+    </p>
+    <div class="hero-cta-group">
+      <a href="#projectes" class="btn-primary" data-i="hero.cta1">Veure projectes →</a>
+      <a href="#contacte" class="btn-secondary" data-i="hero.cta2">Contacte</a>
+      <button class="btn-cv" id="btnCV" onclick="window.open('CV_Marta_Lucea_Michilot.pdf')">
+        <svg viewBox="0 0 24 24"><path d="M12 16l-4-4h3V4h2v8h3l-4 4z"/><path d="M20 18H4v2h16v-2z"/></svg>
+        <span data-i="hero.cv">Descarregar CV</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="profile-photo-wrap">
+      <img class="profile-photo-img" id="photoImg" src="foto-perfil.jpg" alt="Foto de perfil">
+    </div>
+    <div class="hero-card-main">
+      <div class="floating-tag" data-i="hero.available">Disponible</div>
+      <div class="skill-grid">
+        <div class="skill-pill accent">PHP</div>
+        <div class="skill-pill accent">JavaScript</div>
+        <div class="skill-pill">HTML5</div>
+        <div class="skill-pill">CSS3</div>
+        <div class="skill-pill">MySQL</div>
+        <div class="skill-pill">SQLite</div>
+        <div class="skill-pill accent">Kotlin</div>
+        <div class="skill-pill">Git</div>
+        <div class="skill-pill">Java</div>
+        <div class="skill-pill">Python</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE MI -->
+<section id="sobre" style="background:var(--white);">
+  <div class="section-header reveal">
+    <span class="section-number">00</span>
+    <h2 class="section-title" data-i="about.title">Sobre mi</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-block reveal">
+      <p class="about-intro" data-i="about.intro">Soc una estudiant de DAW apassionada per crear interfícies que siguin boniques i funcionals alhora.</p>
+      <p class="about-text" data-i="about.p1">M'encanta afrontar reptes tècnics on he d'aprendre coses noves ràpid. Durant el curs he treballat en projectes reals que van des de jocs interactius fins a sistemes de gestió, sempre buscant que el codi sigui net i escalable.</p>
+      <p class="about-text" data-i="about.p2">Fora del codi, soc delegada de classe, cosa que m'ha ensenyat a comunicar-me bé, gestionar conflictes i coordinar equips. Crec que saber treballar amb persones és tan important com saber programar.</p>
+      <p class="about-text" data-i="about.p3" style="margin-top:1rem; color:var(--accent); font-size:0.8rem;">→ Estic buscant pràctiques FCT on pugui aportar i seguir creixent.</p>
+    </div>
+    <div class="about-block reveal reveal-d1">
+      <div class="about-values">
+        <div class="about-value">
+          <div class="about-value-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div class="about-value-title" data-i="about.v1t">Qualitat i detall</div>
+            <div class="about-value-desc" data-i="about.v1d">M'importa fer les coses bé, no només que funcionin.</div>
+          </div>
+        </div>
+        <div class="about-value">
+          <div class="about-value-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div>
+            <div class="about-value-title" data-i="about.v2t">Treball en equip</div>
+            <div class="about-value-desc" data-i="about.v2d">M'adapto ràpid i sé comunicar-me.</div>
+          </div>
+        </div>
+        <div class="about-value">
+          <div class="about-value-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <div>
+            <div class="about-value-title" data-i="about.v3t">Aprenentatge continu</div>
+            <div class="about-value-desc" data-i="about.v3d">M'agrada aprendre tecnologies noves.</div>
+          </div>
+        </div>
+        <div class="about-value">
+          <div class="about-value-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div>
+            <div class="about-value-title" data-i="about.v4t">Disponible per a FCT</div>
+            <div class="about-value-desc" data-i="about.v4d">Busco pràctiques on pugui contribuir des del primer dia i aprendre en un entorn professional real.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTES -->
+<section id="projectes">
+  <div class="section-header reveal">
+    <span class="section-number">01</span>
+    <h2 class="section-title" data-i="proj.title">Projectes Destacats</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card reveal reveal-d1">
+      <div class="project-year">2026</div>
+      <h3 class="project-name">Diversión con Banderas</h3>
+      <p class="project-desc" data-i="p1.desc">Joc de banderes al navegador amb 10 rondes. Consumeix l'API REST Countries per obtenir banderes i opcions de resposta. API pròpia (GET/POST) sobre SQLite amb autenticació per rols i estadístiques per usuari.</p>
+      <div class="project-stack">
+        <span class="tech-tag">PHP</span><span class="tech-tag">SQLite</span>
+        <span class="tech-tag">REST API</span><span class="tech-tag">Sessions</span>
+      </div>
+      <div class="project-result" data-i="p1.result">✓ Avaluat 10/10 — Aplicació completament funcional</div>
+    </div>
+    <div class="project-card reveal reveal-d2">
+      <div class="project-year">2026</div>
+      <h3 class="project-name">The Brand New IKEA</h3>
+      <p class="project-desc" data-i="p2.desc">CRUD complet de categories i productes sobre SQLite, validant noms duplicats i gestionant imatges. Autenticació amb sessions i contrasenyes MD5: zona pública i zona privada d'administració per rol.</p>
+      <div class="project-stack">
+        <span class="tech-tag">PHP</span><span class="tech-tag">SQLite</span>
+        <span class="tech-tag">Sessions</span><span class="tech-tag">MD5 Auth</span>
+      </div>
+      <div class="project-result pending" data-i="p2.result">En fase final de desenvolupament</div>
+    </div>
+    <div class="project-card reveal reveal-d3" style="border-right:none;">
+      <div class="project-year">2026</div>
+      <h3 class="project-name">Gestor de Pokémons</h3>
+      <p class="project-desc" data-i="p3.desc">Aplicació de consola amb arquitectura MVC per gestionar una base de dades SQLite. CRUD complet, cerca avançada, ordenació i exportació de dades a fitxers. Estadístiques generals i gestió d'errors.</p>
+      <div class="project-stack">
+        <span class="tech-tag">Kotlin</span><span class="tech-tag">JavaFX</span>
+        <span class="tech-tag">SQL</span><span class="tech-tag">MVC</span>
+      </div>
+      <div class="project-result" data-i="p3.result">✓ Avaluat 10/10 — Arquitectura MVC correcta</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="background:var(--white);">
+  <div class="section-header reveal">
+    <span class="section-number">02</span>
+    <h2 class="section-title" data-i="skills.title">Competències</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-layout reveal">
+    <div class="skills-block">
+      <div class="skills-block-title" data-i="skills.prog">Programació</div>
+      <div class="skills-list">
+        <span class="skill-tag">Java</span><span class="skill-tag">Kotlin</span>
+        <span class="skill-tag">Python</span><span class="skill-tag">JavaScript</span><span class="skill-tag">PHP</span>
+      </div>
+      <div class="skills-block-title" style="margin-top:2rem;" data-i="skills.front">Frontend</div>
+      <div class="skills-list">
+        <span class="skill-tag">HTML5</span><span class="skill-tag">CSS3</span><span class="skill-tag" data-i="skills.uxui">UX/UI bàsic</span>
+      </div>
+      <div class="skills-block-title" style="margin-top:2rem;" data-i="skills.db">Bases de dades</div>
+      <div class="skills-list">
+        <span class="skill-tag">MySQL</span><span class="skill-tag">PostgreSQL</span>
+        <span class="skill-tag">SQLite</span><span class="skill-tag">CRUD</span>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skills-block-title" data-i="skills.tools">Eines & Entorn</div>
+      <div class="skills-list">
+        <span class="skill-tag">Git</span><span class="skill-tag">GitHub</span>
+        <span class="skill-tag">VS Code</span><span class="skill-tag">IntelliJ</span>
+      </div>
+      <div class="skills-block-title" style="margin-top:2rem;" data-i="skills.soft">Competències transversals</div>
+      <div class="skills-list" style="flex-direction:column; gap:0.75rem;">
+        <div style="font-size:0.78rem; line-height:1.65; color:var(--ink2);">
+          <strong style="color:var(--ink); font-weight:500;" data-i="skills.s1t">Pensament lògic</strong> — <span data-i="skills.s1d">disseny d'algoritmes i depuració en projectes reals.</span>
+        </div>
+        <div style="font-size:0.78rem; line-height:1.65; color:var(--ink2);">
+          <strong style="color:var(--ink); font-weight:500;" data-i="skills.s2t">Treball col·laboratiu</strong> — <span data-i="skills.s2d">Git, gestió de branques i pull requests en equip.</span>
+        </div>
+        <div style="font-size:0.78rem; line-height:1.65; color:var(--ink2);">
+          <strong style="color:var(--ink); font-weight:500;" data-i="skills.s3t">Lideratge</strong> — <span data-i="skills.s3d">delegada de classe, mediació i coordinació de grups.</span>
+        </div>
+        <div style="font-size:0.78rem; line-height:1.65; color:var(--ink2);">
+          <strong style="color:var(--ink); font-weight:500;" data-i="skills.s4t">Idiomes</strong> — <span data-i="skills.s4d">Català (nadiu) · Castellà (nadiu) · Anglès (bàsic/intermedi)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMACIÓ -->
+<section id="formacio">
+  <div class="section-header reveal">
+    <span class="section-number">03</span>
+    <h2 class="section-title" data-i="edu.title">Formació</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-grid">
+    <div class="edu-card reveal reveal-d1">
+      <div class="edu-period">2025 — <span data-i="edu.now">Actualitat</span></div>
+      <h3 class="edu-degree" data-i="edu.d1">CFGS Desenvolupament d'Aplicacions Web (DAW)</h3>
+      <p class="edu-school">Institut Tecnològic de Barcelona</p>
+      <span class="edu-badge" data-i="edu.ongoing">En curs</span>
+    </div>
+    <div class="edu-card reveal reveal-d2">
+      <div class="edu-period">2023 — 2025</div>
+      <h3 class="edu-degree" data-i="edu.d2">Batxillerat Tecnològic-Digital</h3>
+      <p class="edu-school">Institut Tecnològic de Barcelona</p>
+      <span class="edu-badge" style="background:var(--tag-bg); color:var(--ink2);" data-i="edu.done">Completat</span>
+    </div>
+    <div class="edu-card reveal reveal-d1" style="border-top:none;">
+      <div class="edu-period">2026 — <span data-i="edu.ongoing2">En curs</span></div>
+      <h3 class="edu-degree" data-i="edu.d3">Titulació Monitor/a de Lleure</h3>
+      <p class="edu-school" data-i="edu.d3sub">Pendent de pràctiques</p>
+      <span class="edu-badge" style="background:#fdeee8; color:var(--red);" data-i="edu.pending">Pendent pràctiques</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONCURSOS -->
+<section style="background:var(--white);">
+  <div class="section-header reveal">
+    <span class="section-number">04</span>
+    <h2 class="section-title" data-i="awards.title">Concursos</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="awards-row reveal">
+    <div class="award-item">
+      <div class="award-pos">2n</div>
+      <div class="award-name">12 Uvas</div>
+      <div class="award-desc" data-i="aw1">Segon lloc al concurs regional de programació en la categoria d’alumnes de 1r de grau superior.</div>
+    </div>
+    <div class="award-item">
+      <div class="award-pos">5è</div>
+      <div class="award-name">Programame Regional Terrassa</div>
+      <div class="award-desc" data-i="aw2">Cinquè lloc en el concurs regional de Terrassa (2026).</div>
+    </div>
+    <div class="award-item" style="border-right:none;">
+      <div class="award-pos" style="font-size:1.5rem; padding-top:0.6rem;">★</div>
+      <div class="award-name">Smart Moto Days</div>
+      <div class="award-desc" data-i="aw3">Participació en Smart Moto Days 2025.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTE -->
+<section class="contact-section" id="contacte">
+  <div class="section-header reveal">
+    <span class="section-number" style="color:#1e2f44;">05</span>
+    <h2 class="section-title" data-i="contact.title">Contacte</h2>
+    <div class="section-line" style="background:#1e2f44;"></div>
+  </div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <p class="contact-text" data-i="contact.heading">Interessada en <em>pràctiques</em>, col·laboracions o nous <em>reptes</em>.</p>
+      <p style="font-size:0.78rem; color:#3a5070; margin-top:1.5rem; line-height:1.7;" data-i="contact.sub">
+        Disponible per a pràctiques relacionades amb DAW.<br>No dubtis en posar-te en contacte.
+      </p>
+    </div>
+    <div class="contact-links reveal reveal-d1">
+      <a href="mailto: mlucea07@gmail.com" class="contact-link">
+        <div><span class="contact-link-label">Email</span><span class="contact-placeholder">mlucea07@gmail.com</span></div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="https://github.com/MartaLucea" target="_blank" class="contact-link">
+        <div><span class="contact-link-label">GitHub</span><span class="contact-placeholder">github.com/MartaLucea</span></div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="https://linkedin.com/in/martalucea" target="_blank" class="contact-link">
+        <div><span class="contact-link-label">LinkedIn</span><span class="contact-placeholder">linkedin.com/in/martalucea</span></div>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Portfolio · DAW · Institut Tecnològic de Barcelona</span>
+  <span>© 2026 · [ Nom Cognom ]</span>
+</footer>
+
+<script>
+/* ── TRANSLATIONS ── */
+const T = {
+  ca: {
+    "nav.about":"Sobre mi","nav.projects":"Projectes","nav.skills":"Habilitats","nav.education":"Formació","nav.contact":"Contacte",
+    "hero.label":"Portfolio · DAW · 2026","hero.role":"Desenvolupament d'Aplicacions Web",
+    "hero.bio":"Estudiant de CFGS DAW amb competències en frontend i back-end. Experiència en HTML, CSS, JavaScript, PHP i bases de dades relacionals. Orientada al treball col·laboratiu amb Git i la millora d'usabilitat i accessibilitat web.",
+    "hero.cta1":"Veure projectes →","hero.cta2":"Contacte","hero.cv":"Descarregar CV","hero.available":"Disponible",
+    "photo.add":"Clica per\nafegir foto",
+    "about.title":"Sobre mi",
+    "about.intro":"Soc una estudiant de DAW apassionada per crear interfícies boniques i funcionals alhora.",
+    "about.p1":"M'encanta afrontar reptes tècnics on he d'aprendre coses noves ràpid. Durant el curs he treballat en projectes reals que van des de jocs interactius fins a sistemes de gestió, sempre buscant que el codi sigui net i escalable.",
+    "about.p2":"Fora del codi, soc delegada de classe, cosa que m'ha ensenyat a comunicar-me bé, gestionar conflictes i coordinar equips. Crec que saber treballar amb persones és tan important com saber programar.",
+    "about.p3":"→ Estic buscant pràctiques FCT on pugui aportar i seguir creixent.",
+    "about.v1t":"Qualitat i detall","about.v1d":"M'importa fer les coses bé, no només que funcionin.",
+    "about.v2t":"Treball en equip","about.v2d":"M'adapto ràpid i sé comunicar-me.",
+    "about.v3t":"Aprenentatge continu","about.v3d":"M'agrada aprendre tecnologies noves.",
+    "about.v4t":"Disponible per a FCT","about.v4d":"Busco pràctiques on pugui contribuir des del primer dia i aprendre en un entorn professional real.",
+    "proj.title":"Projectes Destacats",
+    "p1.desc":"Joc de banderes al navegador amb 10 rondes. Consumeix l'API REST Countries per obtenir banderes i opcions de resposta. API pròpia (GET/POST) sobre SQLite amb autenticació per rols i estadístiques per usuari.",
+    "p1.result":"✓ Avaluat 10/10 — Aplicació completament funcional",
+    "p2.desc":"CRUD complet de categories i productes sobre SQLite, validant noms duplicats i gestionant imatges. Autenticació amb sessions i contrasenyes MD5: zona pública i zona privada d'administració per rol.",
+    "p2.result":"En fase final de desenvolupament",
+    "p3.desc":"Aplicació de consola amb arquitectura MVC per gestionar una base de dades SQLite. CRUD complet, cerca avançada, ordenació i exportació de dades a fitxers. Estadístiques generals i gestió d'errors.",
+    "p3.result":"✓ Avaluat 10/10 — Arquitectura MVC correcta",
+    "skills.title":"Competències","skills.prog":"Programació","skills.front":"Frontend","skills.db":"Bases de dades","skills.tools":"Eines & Entorn","skills.soft":"Competències transversals","skills.uxui":"UX/UI bàsic",
+    "skills.s1t":"Pensament lògic","skills.s1d":"disseny d'algoritmes i depuració en projectes reals.",
+    "skills.s2t":"Treball col·laboratiu","skills.s2d":"Git, gestió de branques i pull requests en equip.",
+    "skills.s3t":"Lideratge","skills.s3d":"delegada de classe, mediació i coordinació de grups.",
+    "skills.s4t":"Idiomes","skills.s4d":"Català (nadiu) · Castellà (nadiu) · Anglès (bàsic/intermedi)",
+    "edu.title":"Formació","edu.now":"Actualitat","edu.ongoing":"En curs","edu.ongoing2":"En curs","edu.done":"Completat","edu.pending":"Pendent pràctiques",
+    "edu.d1":"CFGS Desenvolupament d'Aplicacions Web (DAW)","edu.d2":"Batxillerat Tecnològic-Digital","edu.d3":"Titulació Monitor/a de Lleure","edu.d3sub":"Pendent de pràctiques",
+    "awards.title":"Concursos",
+    "aw1":"Segon lloc al concurs regional de programació en la categoria d’alumnes de 1r de grau superior.",
+    "aw2":"Cinquè lloc en el concurs regional de Terrassa (2026).",
+    "aw3":"Participació en Smart Moto Days 2025.",
+    "contact.title":"Contacte","contact.heading":"Interessada en <em>pràctiques</em>, col·laboracions o nous <em>reptes</em>.","contact.sub":"Disponible per a FCT i pràctiques relacionades amb DAW.<br>No dubtis en posar-te en contacte."
+  },
+  es: {
+    "nav.about":"Sobre mí","nav.projects":"Proyectos","nav.skills":"Habilidades","nav.education":"Formación","nav.contact":"Contacto",
+    "hero.label":"Portfolio · DAW · 2026","hero.role":"Desarrollo de Aplicaciones Web",
+    "hero.bio":"Estudiante de CFGS DAW con competencias en frontend y back-end. Experiencia en HTML, CSS, JavaScript, PHP y bases de datos relacionales. Orientada al trabajo colaborativo con Git y la mejora de usabilidad y accesibilidad web.",
+    "hero.cta1":"Ver proyectos →","hero.cta2":"Contacto","hero.cv":"Descargar CV","hero.available":"Disponible",
+    "photo.add":"Haz clic para\nañadir foto",
+    "about.title":"Sobre mí",
+    "about.intro":"Soy una estudiante de DAW apasionada por crear interfaces bonitas y funcionales a la vez.",
+    "about.p1":"Me encanta afrontar retos técnicos donde tengo que aprender cosas nuevas rápido. Durante el curso he trabajado en proyectos reales que van desde juegos interactivos hasta sistemas de gestión, siempre buscando que el código sea limpio y escalable.",
+    "about.p2":"Fuera del código, soy delegada de clase, lo que me ha enseñado a comunicarme bien, gestionar conflictos y coordinar equipos. Creo que saber trabajar con personas es tan importante como saber programar.",
+    "about.p3":"→ Estoy buscando prácticas FCT donde pueda aportar y seguir creciendo.",
+    "about.v1t":"Calidad y detalle","about.v1d":"Me importa hacer las cosas bien, no solo que funcionen.",
+    "about.v2t":"Trabajo en equipo","about.v2d":"Me adapto rápido y sé comunicarme.",
+    "about.v3t":"Aprendizaje continuo","about.v3d":"Me gusta aprender tecnologías nuevas.",
+    "about.v4t":"Disponible para FCT","about.v4d":"Busco prácticas donde pueda contribuir desde el primer día y aprender en un entorno profesional real.",
+    "proj.title":"Proyectos Destacados",
+    "p1.desc":"Juego de banderas en el navegador con 10 rondas. Consume la API REST Countries para obtener banderas y opciones de respuesta. API propia (GET/POST) sobre SQLite con autenticación por roles y estadísticas por usuario.",
+    "p1.result":"✓ Evaluado 10/10 — Aplicación completamente funcional",
+    "p2.desc":"CRUD completo de categorías y productos sobre SQLite, validando nombres duplicados y gestionando imágenes. Autenticación con sesiones y contraseñas MD5: zona pública y zona privada de administración por rol.",
+    "p2.result":"En fase final de desarrollo",
+    "p3.desc":"Aplicación de consola con arquitectura MVC para gestionar una base de datos SQLite. CRUD completo, búsqueda avanzada, ordenación y exportación de datos a ficheros. Estadísticas generales y gestión de errores.",
+    "p3.result":"✓ Evaluado 10/10 — Arquitectura MVC correcta",
+    "skills.title":"Competencias","skills.prog":"Programación","skills.front":"Frontend","skills.db":"Bases de datos","skills.tools":"Herramientas & Entorno","skills.soft":"Competencias transversales","skills.uxui":"UX/UI básico",
+    "skills.s1t":"Pensamiento lógico","skills.s1d":"diseño de algoritmos y depuración en proyectos reales.",
+    "skills.s2t":"Trabajo colaborativo","skills.s2d":"Git, gestión de ramas y pull requests en equipo.",
+    "skills.s3t":"Liderazgo","skills.s3d":"delegada de clase, mediación y coordinación de grupos.",
+    "skills.s4t":"Idiomas","skills.s4d":"Catalán (nativo) · Castellano (nativo) · Inglés (básico/intermedio)",
+    "edu.title":"Formación","edu.now":"Actualidad","edu.ongoing":"En curso","edu.ongoing2":"En curso","edu.done":"Completado","edu.pending":"Pendiente prácticas",
+    "edu.d1":"CFGS Desarrollo de Aplicaciones Web (DAW)","edu.d2":"Bachillerato Tecnológico-Digital","edu.d3":"Titulación Monitor/a de Tiempo Libre","edu.d3sub":"Pendiente de prácticas",
+    "awards.title":"Concursos",
+    "aw1":"Segundo lugar en el concurso regional de programación en la categoría de alumnos de 1º de Grado Superior.",
+    "aw2":"Quinto lugar en el concurso regional de Terrassa (2026).",
+    "aw3":"Participación en Smart Moto Days 2025.",
+    "contact.title":"Contacto","contact.heading":"Interesada en <em>prácticas</em>, colaboraciones o nuevos <em>retos</em>.","contact.sub":"Disponible para FCT y prácticas relacionadas con DAW.<br>No dudes en ponerte en contacto."
+  },
+  en: {
+    "nav.about":"About","nav.projects":"Projects","nav.skills":"Skills","nav.education":"Education","nav.contact":"Contact",
+    "hero.label":"Portfolio · DAW · 2026","hero.role":"Web Application Development",
+    "hero.bio":"CFGS DAW student with skills in frontend and back-end development. Experience in HTML, CSS, JavaScript, PHP and relational databases. Oriented towards collaborative work with Git and improving web usability and accessibility.",
+    "hero.cta1":"View projects →","hero.cta2":"Contact","hero.cv":"Download CV","hero.available":"Available",
+    "photo.add":"Click to\nadd photo",
+    "about.title":"About me",
+    "about.intro":"I'm a DAW student passionate about building interfaces that are both beautiful and functional.",
+    "about.p1":"I love tackling technical challenges where I have to learn new things quickly. During the course I have worked on real projects ranging from interactive games to management systems, always aiming for clean and scalable code.",
+    "about.p2":"Outside of code, I'm class representative, which has taught me to communicate well, manage conflicts and coordinate teams. I believe knowing how to work with people is just as important as knowing how to code.",
+    "about.p3":"→ I'm looking for internships where I can contribute and keep growing.",
+    "about.v1t":"Quality & detail","about.v1d":"Doing things well matters to me, not just making them work.",
+    "about.v2t":"Teamwork","about.v2d":"I adapt quickly and communicate clearly.",
+    "about.v3t":"Continuous learning","about.v3d":"I enjoy picking up new technologies.",
+    "about.v4t":"Available for internships","about.v4d":"Looking for a placement where I can contribute from day one and learn in a real professional environment.",
+    "proj.title":"Featured Projects",
+    "p1.desc":"Browser flag quiz game with 10 rounds. Consumes the REST Countries API to fetch flags and answer options. Custom API (GET/POST) on SQLite with role-based authentication and per-user statistics.",
+    "p1.result":"✓ Graded 10/10 — Fully functional application",
+    "p2.desc":"Full CRUD for categories and products on SQLite, validating duplicate names and handling images. Session and MD5-password authentication: public browsing area and role-protected admin panel.",
+    "p2.result":"Final stage of development",
+    "p3.desc":"Console application with MVC architecture to manage a local SQLite database. Full CRUD with advanced search, sorting and data export to files. General statistics and error handling.",
+    "p3.result":"✓ Graded 10/10 — MVC architecture correctly implemented",
+    "skills.title":"Skills","skills.prog":"Programming","skills.front":"Frontend","skills.db":"Databases","skills.tools":"Tools & Environment","skills.soft":"Soft skills","skills.uxui":"Basic UX/UI",
+    "skills.s1t":"Logical thinking","skills.s1d":"algorithm design and debugging in real projects.",
+    "skills.s2t":"Collaborative work","skills.s2d":"Git, branch management and pull requests in a team.",
+    "skills.s3t":"Leadership","skills.s3d":"class representative, conflict mediation and group coordination.",
+    "skills.s4t":"Languages","skills.s4d":"Catalan (native) · Spanish (native) · English (basic/intermediate)",
+    "edu.title":"Education","edu.now":"Present","edu.ongoing":"Ongoing","edu.ongoing2":"Ongoing","edu.done":"Completed","edu.pending":"Internship pending",
+    "edu.d1":"CFGS Web Application Development (DAW)","edu.d2":"Technology & Digital Baccalaureate","edu.d3":"Youth Activity Monitor Certification","edu.d3sub":"Internship pending",
+    "awards.title":"Competitions",
+    "aw1":"Second place in the regional programming contest in the category of 1st-year Higher Education students.",
+    "aw2":"Fifth place in the Terrassa regional competition (2026).",
+    "aw3":"Participation in Smart Moto Days 2025.",
+    "contact.title":"Contact","contact.heading":"Interested in <em>internships</em>, collaborations or new <em>challenges</em>.","contact.sub":"Available for FCT placements and DAW-related internships.<br>Don't hesitate to get in touch."
+  }
+};
+
+let currentLang = 'ca';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === lang || (lang==='ca' && b.textContent==='CAT')));
+  document.querySelectorAll('[data-i]').forEach(el => {
+    const key = el.getAttribute('data-i');
+    if (T[lang] && T[lang][key] !== undefined) el.innerHTML = T[lang][key];
+  });
+  document.documentElement.lang = lang === 'ca' ? 'ca' : lang === 'es' ? 'es' : 'en';
+}
+
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20), { passive: true });
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function downloadCV() {
+  alert('Para activar la descarga del CV:\n\n1. Guarda tu CV como "cv.pdf" en la misma carpeta que este archivo HTML.\n2. Sustituye la función downloadCV() en el código por:\n   window.open("cv.pdf")');
+}
+
+</script>
+</body>
+</html>
